@@ -2,6 +2,8 @@ from flask import Flask, jsonify
 
 app = Flask(__name__) # Instance of Flask
 
+
+# ---- Coupons ---- 
 coupons = [
     {"_id": 1, "code": "WELCOME10", "discount": 10},
     {"_id": 2, "code": "SPOOKY25", "discount": 25},
@@ -17,6 +19,7 @@ def get_coupons():
 def get_coupons_count():
     return jsonify(len(coupons))
 
+# ----- COUPONS END -------
 
 @app.get("/")
 def index():
