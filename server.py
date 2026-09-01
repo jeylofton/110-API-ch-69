@@ -10,7 +10,8 @@ coupons = [
     {"_id": 3, "code": "VIP50", "discount": 50}
 ]
 
-@app.get("/api/coupons")
+@app.get("
+)
 def get_coupons():
     return jsonify(coupons)
 
