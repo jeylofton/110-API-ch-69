@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__) # Instance of Flask
 
@@ -10,8 +10,7 @@ coupons = [
     {"_id": 3, "code": "VIP50", "discount": 50}
 ]
 
-@app.get("
-)
+@app.get("/api/coupons")
 def get_coupons():
     return jsonify(coupons)
 
@@ -19,6 +18,24 @@ def get_coupons():
 @app.get("/api/coupons/count")
 def get_coupons_count():
     return jsonify(len(coupons))
+
+
+# POST http://127.0.0.1:5000/api/coupons
+@app.post("/api/coupons")
+def create_coupon():
+    new_coupon = request.get_json()
+    new_coupon["_id"] = len(coupons) + 1
+    coupons.append(new_coupon)
+    return jsonify(new_coupon), 201
+
+
+# GET http://127.0.0.1:5000/api/coupons/2
+@app.get("/api/coupons/<int:id>")
+def get_coupon_by_id(id):
+    for coupon in coupons:
+        if coupon["_id"] == id:
+            return jsonify(coupon), 200
+    return jsonify({"error": "Coupon not found"}), 404
 
 # ----- COUPONS END -------
 
