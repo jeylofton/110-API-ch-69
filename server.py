@@ -23,7 +23,11 @@ def get_coupons_count():
 # POST http://127.0.0.1:5000/api/coupons
 @app.post("/api/coupons")
 def create_coupon():
-    new_coupon = request.get_json()
+    new_coupon = request.get_json(silent=True)
+    if not new_coupon:
+        return jsonify({"error": "Request body must be JSON"}), 400
+    if "code" not in new_coupon or "discount" not in new_coupon:
+        return jsonify({"error": "Missing required field: code and discount"}), 400
     new_coupon["_id"] = len(coupons) + 1
     coupons.append(new_coupon)
     return jsonify(new_coupon), 201
