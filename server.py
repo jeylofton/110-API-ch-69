@@ -10,6 +10,25 @@ coupons = [
     {"_id": 3, "code": "VIP50", "discount": 50}
 ]
 
+
+products = [
+    {
+        "id": 1,
+        "name": "Cake",
+        "price": 10.99
+    },
+    {
+        "id": 2,
+        "name": "Cookies",
+        "price": 4.99
+    },
+    {
+        "id": 3,
+        "name": "Chips",
+        "price": 2.99
+    }
+]
+
 @app.get("/api/coupons")
 def get_coupons():
     return jsonify(coupons)
@@ -32,14 +51,48 @@ def create_coupon():
     coupons.append(new_coupon)
     return jsonify(new_coupon), 201
 
+# PUT http://127.0.0.1:5000/api/products/ -> Update a product by id
+@app.put("/api/products/<int:product_id>")
+def update_product_by_id(product_id):
+    updated_data = request.get_json(silent=True)
+    if not updated_data:
+        return jsonify({"error": "Request body must be JSON"}), 400
 
-# GET http://127.0.0.1:5000/api/coupons/2
+    for product in products:
+        if product["id"] == product_id:
+            product["name"] = updated_data["name"]
+            product["price"] = updated_data["price"]
+            return jsonify(product), 200
+
+    return jsonify({"error": "Product not found"}), 404
+
+# DELETE http://127.0.0.1/api/products -> Remove product by id
+@app.delete("/api/products/<int:product_id>")
+def remove_product_by_id(product_id):
+    for product in products:
+        if product["id"] == product_id:
+            products.remove(product)
+            return jsonify({"message": "Product deleted successfully"}), 200
+    return jsonify({"error": "Product not found"}), 404
+
+
+# GET http://127.0.0.1:5000/api/coupons/
 @app.get("/api/coupons/<int:id>")
 def get_coupon_by_id(id):
     for coupon in coupons:
         if coupon["_id"] == id:
             return jsonify(coupon), 200
     return jsonify({"error": "Coupon not found"}), 404
+
+# DELETE http://127.0.0.1:5000/api/coupons/ -> Remove a coupon by id
+@app.delete("/api/coupons/<int:id>")
+def remove_coupon_by_id(id):
+    for coupon in coupons:
+        if coupon["_id"] == id:
+            coupons.remove(coupon)
+            return jsonify({"message": "Coupon deleted successfully"}), 200
+    return jsonify({"error": "Coupon not found"}), 404
+
 
 # ----- COUPONS END -------
 
@@ -72,7 +125,7 @@ def get_contact_information():
 @app.get("/course")
 def get_course_information():
     course_info = {
-        "title": "Introduction Web API with Flash",
+        "title": "Introduction Web API with Flask",
         "duration": "4 Sessions",
         "level": "Beginner"
     }
